@@ -58,7 +58,7 @@ cd mini-olx-backend
 3. We will be using the dependency management provided by Golang. 
 Run the `go mod init` command and this will generate a `go.mod` file that saves the third-party libraries we require.
 ```sh
-go mod init 
+go mod init mini-olx-backend 
 ```
 We will need certain packages to help us with our journey:
 - **gorilla/mux** - To create routes and HTTP handlers for our endpoints 
