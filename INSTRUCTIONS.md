@@ -152,7 +152,9 @@ CREATE TABLE advert (
 INSERT INTO advert (id, title, description, price, image_path)
 VALUES (1, 'Pink sofa', 'A very beautiful sofa', 250, 'pink_sofa.jpg');
 ```
-9. Now back to the project, let’s create our database client to manage and create connections to the database.
+9. Now back to the project, let’s create our database package to manage and create connections to the database.
+
+Create a folder name `database`. Inside the folder, create the `connection.go` file and add the following code:
 ```go
 package database
 
@@ -194,7 +196,7 @@ func GetConn() *sql.DB {
 	return dbConn
 }
 ```
-10. Then we will update our main function `main.go` and call to function to make the connection to DB:
+10. Then we will update the `main.go` file and call the function `CreateConn` to make the connection to database:
 ```diff
 package main
 
