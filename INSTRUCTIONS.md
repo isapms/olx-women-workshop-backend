@@ -12,15 +12,15 @@
 
 # Instructions
 ## 1. Design API endpoints
-When developing an API, typically we begin by designing the endpoints. And here are the endpoints we will create in this tutorial:
+When developing an API, typically we begin by designing the endpoints. Here are the endpoints we will create in this tutorial:
 
 **List adverts**
 ```
-curl --location --request GET 'http://localhost:4040/api/ads'
+GET 'http://localhost:4040/api/ads'
 ```
 **Create an advert**
 ```
-curl --location --request POST 'http://localhost:4040/api/ads' \
+POST 'http://localhost:4040/api/ads' \
 --form 'title="Sofá cinzento 5"' \
 --form 'description="Lorem Ipsum dasda"' \
 --form 'price="350.5"' \
@@ -28,7 +28,7 @@ curl --location --request POST 'http://localhost:4040/api/ads' \
 ```
 **Delete an advert**
 ```
-curl --location --request DELETE 'http://localhost:4040/api/ads/{advert_id}'
+DELETE 'http://localhost:4040/api/ads/{advert_id}'
 ```
 
 ## 2. Create project for the application
@@ -111,7 +111,7 @@ DB_USER=root
 DB_PASS=
 DB_NAME=mini_olx
 ```
-3. Execute the following command in order to set up our database system (remove the `-d` flag if you want to see the output):
+3. On the termina, execute the following command in order to set up our database system (remove the `-d` flag if you want to see the output):
 ```shell
 docker-compose up -d
 ```
@@ -127,15 +127,16 @@ CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS  
 4. Now, let's set up our database from Docker. Using SQLTools on VSCode editor, open a new DB connection.
 ![](docs/images/db_1.png)
 ![](docs/images/db_2.png)
+![](docs/images/db_3.jpeg)
 
 
 6. To create the database use the query below
 ```mysql
-CREATE DATABASE mini_olx
+CREATE DATABASE mini_olx;
 ```
 6. To start using the previously created database use the query below:
 ```mysql
-USE mini_olx
+USE mini_olx;
 ```
 7. Once inside our database let’s create the table `advert` where we'll store all the information about the advert:
 ```mysql
@@ -145,7 +146,7 @@ CREATE TABLE advert (
     description TEXT NOT NULL,
     price FLOAT not null,
     image_path VARCHAR(255) not null
-)
+);
 ```
 8. Insert some data into the table:
 ```mysql
@@ -221,7 +222,7 @@ In this step we will create the package responsible to manage the data.
 This package will contain Go structs that can be bounded to database objects and also the necessary queries to perform the actions.
 1. Create a new folder called `models`.
 2. Inside `models` folder, create `advert.go` file.
-3. Let's start by creating our model by using go struct:
+3. Let's start by creating our model by using go `struct` type:
 ```Go
 package models
 
@@ -233,7 +234,7 @@ type Advert struct {
 	Image       string  `json:"ad_image"`
 }
 ```
-3. With our database in place we now can define here all the interactions with the records of out `advert` table (LIST, CREATE and DELETE):
+3. With our database in place we now can define here all the interactions with the records of the `advert` table (LIST, CREATE and DELETE):
 ```diff
 package models
 
@@ -721,7 +722,7 @@ func main() {
 ![](docs/images/postman_delete.png)
 
 ## 5. Put it all together
-Now that we have our API working as expected let's put our frontend application communicating with our newly API.
+Now that we have our API working as expected let's put our frontend application communicating with our newly API. 
 In order to proceed, we will use a docker image of the application done in the latest workshop.
 1. Let's update our `docker-compose.yml` file as following:
 ```diff
@@ -749,7 +750,7 @@ Run `docker-compose up -d`
 
 Go to your favorite browser and open the following url http://localhost:3000
 
-2. Our browser application in http://localhost:3000 is doing a requesting to a different domain http://localhost:4040.
+2. Our frontend application in http://localhost:3000 is doing a request to a different domain http://localhost:4040.
 We need to enable CORS to allow this communication. For this we need to add some special headers to our requests on backend side.
 On `main.go` file let's add the following to our routes:
 ```diff
