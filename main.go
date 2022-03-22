@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/rs/cors"
 
 	"olx-women-workshop-2022-backend/database"
 	"olx-women-workshop-2022-backend/handlers"
@@ -24,7 +25,7 @@ func main() {
 
 	router.
 		PathPrefix("/static/").
-		Handler(http.StripPrefix("/", http.FileServer(http.Dir("./static/"))))
+		Handler(http.StripPrefix("/static", http.FileServer(http.Dir("./static/"))))
 
 	allowedMethods := []string{
 		http.MethodGet,

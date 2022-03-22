@@ -439,60 +439,64 @@ func List(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(res)
 }
 
-
-+ func Create(w http.ResponseWriter, r *http.Request) {
-+    var err error
-+    var res Respons 
-+    newAdvert := models.Advert{
-+        Title:       r.FormValue("title"),
-+        Description: r.FormValue("description"),
-+    
-+    if s, err := strconv.ParseFloat(r.FormValue("price"), 64); err == nil {
-+        newAdvert.Price = s
-+    
-+    newAdvert.Image, err = getFormFile(r)
-+    if err != nil {
-+        res.Err = err.Error()
-+        w.Header().Set("Content-Type", "application/json")
-+        json.NewEncoder(w).Encode(res)
-+    
-+    _, err = models.Create(newAdvert)
-+    if err != nil {
-+        res.Err = err.Error()
-+    } else {
-+        res.Data = "created"
-+    
-+    w.Header().Set("Content-Type", "application/json")
-+    json.NewEncoder(w).Encode(res)
-+ }
-+ 
-+ func getFormFile(r *http.Request) (string, error) {
-+   r.ParseMultipartForm(10 << 20) // 10mb
-+ 
-+   file, _, err := r.FormFile("ad_image")
-+   if err != nil {
-+       return "", err
-+   }
-+   defer file.Close()
-+ 
-+   tempFile, err := ioutil.TempFile("static/images", "upload-*.png")
-+   if err != nil {
-+       return "", err
-+   }
-+   defer tempFile.Close()
-+ 
-+   fileBytes, err := ioutil.ReadAll(file)
-+   if err != nil {
-+       return "", err
-+   }
-+ 
-+   _, err = tempFile.Write(fileBytes)
-+   if err != nil {
-+       return "", err
-+   }
-+ 
-+   return tempFile.Name(), nil
-+ }
++func Create(w http.ResponseWriter, r *http.Request) {
++	var err error
++	var res Response
++
++	newAdvert := models.Advert{
++		Title:       r.FormValue("title"),
++		Description: r.FormValue("description"),
++	}
++
++	if s, err := strconv.ParseFloat(r.FormValue("price"), 64); err == nil {
++		newAdvert.Price = s
++	}
++
++	newAdvert.Image, err = getFormFile(r)
++	if err != nil {
++		res.Err = err.Error()
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(res)
++	}
++
++	_, err = models.Create(newAdvert)
++	if err != nil {
++		res.Err = err.Error()
++	} else {
++		res.Data = "created"
++	}
++
++	w.Header().Set("Content-Type", "application/json")
++	json.NewEncoder(w).Encode(res)
++}
++
++func getFormFile(r *http.Request) (string, error) {
++	r.ParseMultipartForm(10 << 20) //10mb
++
++	file, _, err := r.FormFile("ad_image")
++	if err != nil {
++		return "", err
++	}
++	defer file.Close()
++
++	tempFile, err := ioutil.TempFile("static/images", "upload-*.png")
++	if err != nil {
++		return "", err
++	}
++	defer tempFile.Close()
++
++	fileBytes, err := ioutil.ReadAll(file)
++	if err != nil {
++		return "", err
++	}
++
++	_, err = tempFile.Write(fileBytes)
++	if err != nil {
++		return "", err
++	}
++
++	return tempFile.Name(), nil
++}
 ```
 
 8. We will need a folder to store the uploaded images.
@@ -554,7 +558,7 @@ func main() {
 
 +    router.
 +        PathPrefix("/static/").
-+        Handler(http.StripPrefix("/", http.FileServer(http.Dir("./static/"))))
++        Handler(http.StripPrefix("/static", http.FileServer(http.Dir("./static/"))))
     
     err := http.ListenAndServe(":"+os.Getenv("PORT"), router)
 	if err != nil {
@@ -752,7 +756,12 @@ Go to your favorite browser and open the following url http://localhost:3000
 
 2. Our frontend application in http://localhost:3000 is doing a request to a different domain http://localhost:4040.
 We need to enable CORS to allow this communication. For this we need to add some special headers to our requests on backend side.
-On `main.go` file let's add the following to our routes:
+
+First let's add a new dependency to out project. Go to the terminal and add it:
+```sh
+go get github.com/rs/cors
+```
+Then, on `main.go` file let's add the following to our routes:
 ```diff
 package main
 
@@ -778,7 +787,7 @@ func main() {
 
     router.
         PathPrefix("/static/").
-        Handler(http.StripPrefix("/", http.FileServer(http.Dir("./static/"))))
+        Handler(http.StripPrefix("/static", http.FileServer(http.Dir("./static/"))))
     
 +   allowedMethods := []string{
 +       http.MethodGet,
