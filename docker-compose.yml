@@ -14,6 +14,7 @@ services:
     ports:
       - 33061:3306
     volumes:
+##      - "./scripts/schema.sql:/docker-entrypoint-initdb.d/1.sql"
       - mini-olx-backend-data:/var/lib/mysql
 volumes:
   mini-olx-backend-data:
