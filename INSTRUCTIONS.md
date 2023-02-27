@@ -729,7 +729,7 @@ func main() {
 }
 ```
 
-14. Going back to Postman and doing the `DELETE: /api/ads/:id` request, we should receive the following JSON response.
+14. Going back to Postman and doing the `DELETE: /api/ads/{id}` request, we should receive the following JSON response.
 ![](docs/images/postman_delete.png)
 
 ## 5. Put it all together
