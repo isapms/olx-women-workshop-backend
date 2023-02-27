@@ -789,8 +789,8 @@ func main() {
     
     router := mux.NewRouter()
     router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodGet)
-    router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodPost)
-    router.HandleFunc("/api/ads/{id}", handlers.List).Methods(http.MethodDelete)
+    router.HandleFunc("/api/ads", handlers.Create).Methods(http.MethodPost)
+    router.HandleFunc("/api/ads/{id}", handlers.Delete).Methods(http.MethodDelete)
 
     router.
         PathPrefix("/static/").
