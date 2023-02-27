@@ -335,11 +335,13 @@ func main() {
 So now, let's create the folder handlers. Then create `advert.go`.
 4. On `advert.go` file, let's start by creating the handler to list all the items.
 ```go
+package handlers
+
 import (
     "encoding/json"
     "fmt"
     "net/http"
-    "olx-women-workshop-2022-backend/models"
+    "mini-olx-backend/models"
     "os"
     
     _ "github.com/joho/godotenv/autoload"
@@ -378,7 +380,8 @@ import (
     "net/http"
     "os"
 
-    "mini-olx-backend/database"
+    "mini-olx-backend/database"    
++    "mini-olx-backend/handlers"
 
     "github.com/gorilla/mux"
     _ "github.com/joho/godotenv/autoload"
@@ -403,11 +406,13 @@ func main() {
 
 7. Let's continue by creating the CREATE handler. Back to `handlers > advert.go` file:
 ```diff
+package handlers
+
 import (
     "encoding/json"
     "fmt"
     "net/http"
-    "olx-women-workshop-2022-backend/models"
+    "mini-olx-backend/models"
     "os"
     
     _ "github.com/joho/godotenv/autoload"
@@ -510,7 +515,7 @@ import (
 	"log"
 	"net/http"
 	"mini-olx-backend/database"
-+	 "mini-olx-backend/handlers"
+	"mini-olx-backend/handlers"
 	"os"
 
 	"github.com/gorilla/mux"
@@ -523,7 +528,7 @@ func main() {
     
     router := mux.NewRouter()
     router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodGet)
-+    router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodPost)
++    router.HandleFunc("/api/ads", handlers.Create).Methods(http.MethodPost)
     
     err := http.ListenAndServe(":"+os.Getenv("PORT"), router)
 	if err != nil {
@@ -554,7 +559,7 @@ func main() {
     
     router := mux.NewRouter()
     router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodGet)
-    router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodPost)
+    router.HandleFunc("/api/ads", handlers.Create).Methods(http.MethodPost)
 
 +    router.
 +        PathPrefix("/static/").
@@ -571,11 +576,13 @@ func main() {
 
 12. And now let's create the last handler to DELETE an advert. Back to `handlers > advert.go` file:
 ```diff
+package handlers
+
 import (
     "encoding/json"
     "fmt"
     "net/http"
-    "olx-women-workshop-2022-backend/models"
+    "mini-olx-backend/models"
     "os"
     
     _ "github.com/joho/godotenv/autoload"
@@ -687,7 +694,7 @@ func getFormFile(r *http.Request) (string, error) {
 
 ```
 
-13. Register the route `DELETE: /api/ads/:id` in our server defined in `main.go`:
+13. Register the route `DELETE: /api/ads/{id}` in our server defined in `main.go`:
 ```diff
 package main
 
@@ -708,8 +715,8 @@ func main() {
     
     router := mux.NewRouter()
     router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodGet)
-    router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodPost)
-+    router.HandleFunc("/api/ads/:id", handlers.List).Methods(http.MethodDelete)
+    router.HandleFunc("/api/ads", handlers.Create).Methods(http.MethodPost)
++    router.HandleFunc("/api/ads/{id}", handlers.Delete).Methods(http.MethodDelete)
     
     router.
         PathPrefix("/static/").
@@ -733,7 +740,7 @@ In order to proceed, we will use a docker image of the application done in the l
 version: "3.2"
 services:
 +  frontend:
-+    image: aipms/olx-women-workshop-2022-frontend:v1
++    image: aipms/olx-women-workshop-frontend:v1
 +    ports:
 +      - 3000:3000
 +    container_name: mini-olx-frontend
@@ -783,7 +790,7 @@ func main() {
     router := mux.NewRouter()
     router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodGet)
     router.HandleFunc("/api/ads", handlers.List).Methods(http.MethodPost)
-    router.HandleFunc("/api/ads/:id", handlers.List).Methods(http.MethodDelete)
+    router.HandleFunc("/api/ads/{id}", handlers.List).Methods(http.MethodDelete)
 
     router.
         PathPrefix("/static/").
